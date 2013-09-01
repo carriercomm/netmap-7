@@ -1,0 +1,64 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Loads a program into a controller board
+ *
+ * PHP Version 5
+ *
+ * <pre>
+ * Scripts related to HUGnet
+ * Copyright (C) 2007-2011 Hunt Utilities Group, LLC
+ * Copyright (C) 2009 Scott Price
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * </pre>
+ *
+ * @category   Main
+ * @package    Main
+ * @subpackage Main
+ * @author     Scott Price <prices@hugllc.com>
+ * @copyright  2013 Scott Price
+ * @license    http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @version    Release: 0.0.1
+ * @link       http://github.com/prices/netmap
+ *
+ */
+$configFile = dirname(__FILE__)."/config/config.ini";
+if (!file_exists($configFile)) {
+    die("No config file found".PHP_EOL);
+}
+$config = parse_ini_file($configFile, true);
+
+switch(trim($config["version"])) {
+case "1":
+    $version = SNMP::VERSION_1;
+    break;
+case "3":
+    $version = SNMP::VERSION_3;
+    break;
+default:
+    $version = SNMP::VERSION_2C;
+    break;
+}
+$hostname = $argv[1];
+$snmp = new SNMP($version, $hostname, "public");
+//$tree = $snmp->walk("1.0.8802.1.1.2.1.4.1.1");
+$tree = $snmp->walk("1.0.8802.1.1.2.1.3.7");
+var_dump($tree);
+
+
+$snmp->close();
+ 
+ ?>
